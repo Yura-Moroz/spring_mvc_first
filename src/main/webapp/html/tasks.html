@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List</title>
+    <link href="styles/styleHome.css" rel="stylesheet">
+</head>
+
+<body>
+<h2>Task List</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.id}"></td>
+        <td th:text="${task.description}" th:id="'description_' + ${task.id}"></td>
+        <td th:text="${task.status}" th:id="'status_' + ${task.id}"></td>
+        <td>
+            <!-- Edit form -->
+            <form th:action="@{/edit/{id} (id=${task.id})}" th:method="get" style="display: inline;">
+                <button type="submit">Edit</button>
+            </form>
+            <!-- Delete form -->
+            <form th:action="@{/{id}(id=${task.id})}" th:method="DELETE" style="display: inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Add New Task</h3>
+<div class="form-container">
+    <!-- Add new task form -->
+    <form th:action="@{/}" method="post" style="display: flex; gap: 10px;">
+        <input type="text" name="description" placeholder="Task description" required/>
+        <select name="status">
+            <option th:each="status : ${T(com.yuramoroz.spring_mvc_project.domain.Status).values()}"
+                    th:value="${status}" th:text="${status}">
+            </option>
+        </select>
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<!-- Pagination -->
+<div>
+    <div class="button_page" th:each="pageNumber : ${page_numbers}">
+        <a th:href="@{/(page=${pageNumber}, limit=10)}"
+           th:text="${pageNumber}"
+           th:classappend="${pageNumber == current_page ? 'active_page' : ''}">
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
